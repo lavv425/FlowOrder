@@ -59,7 +59,7 @@ use React\EventLoop\Loop;
 use React\Http\HttpServer;
 use React\Socket\SocketServer;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
+// use Psr\Http\Message\StreamInterface;
 use React\Http\Message\Response;
 
 class Api extends Responder
@@ -466,6 +466,11 @@ class Api extends Responder
     {
         try {
             $host = $options["host"] ?? self::DEFAULT_SERVER_CONFIGURATION["host"];
+
+            if ($host === "localhost") {
+                $host = self::DEFAULT_SERVER_CONFIGURATION["host"];
+            }
+
             $port = $options["port"] ?? self::DEFAULT_SERVER_CONFIGURATION["port"];
             $sslCertFile = $options["ssl_cert_file"] ?? "";
             $sslKeyFile = $options["ssl_key_file"] ?? "";
@@ -713,7 +718,7 @@ class Api extends Responder
             ["Content-Type", "Authorization"],          // Header consentiti
             true                                        // Credenziali consentite
         );
-    
+
         self::responder($type, $data, $sentMessage, $statusCode);
     }
 }

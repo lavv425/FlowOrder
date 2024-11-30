@@ -6,6 +6,7 @@
         "react/event-loop": "^1.5",
         "vlucas/phpdotenv": "^5.6",
         "doctrine/orm": "^3.3",
-        "doctrine/migrations": "^3.8"
+        "doctrine/migrations": "^3.8",
+        "symfony/cache": "^7.2"
     }
 }

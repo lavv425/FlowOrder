@@ -1,29 +1,23 @@
 <?php
-
-require_once __DIR__ . "/../../../vendor/autoload.php";
-$config =  __DIR__ . "/../../../constants/config.php";
+$config = require __DIR__ . "/../../../constants/config.php";
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
+use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
 
 // "Default" Doctrine configuration
-$config = ORMSetup::createAttributeMetadataConfiguration(
-    paths: [__DIR__ . $config["ENTITIES_DIR"]],
+$ORMConfig = ORMSetup::createAttributeMetadataConfiguration(
+    paths: [$config["ENTITIES_DIR"]],
     isDevMode: true,
 );
 
+$ORMConfig->setQuoteStrategy(new DefaultQuoteStrategy());
+
 // Database connection configuration
-$connectionParams = [
-        'dbname' => $config["DB_NAME"],
-        'user' => $config["DB_USER"],
-        'password' => $config["DB_PASS"],
-        'host' => $config["DB_HOST"],   
-        'driver' => 'pdo_mysql',
-];
-$connection = DriverManager::getConnection([
-    ''
-], $config);
+$connection = DriverManager::getConnection($config["DOCTRINE_CONNECTION_PARAMS"], $ORMConfig);
 
 // EntityManager instance
-$entityManager = new EntityManager($connection, $config);
+$entityManager = new EntityManager($connection, $ORMConfig);
+
+return $entityManager;
