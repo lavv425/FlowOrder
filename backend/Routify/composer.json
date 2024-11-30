@@ -1,0 +1,10 @@
+{
+    "name": "routify/project",
+    "description": "A simple routing system",
+    "autoload": {
+        "psr-4": {
+            "Routify\\": "Api/"
+        }
+    },
+    "require": {}
+}

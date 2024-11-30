@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# Sends all requests to the index.php file
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L] # sends all requests to this file
