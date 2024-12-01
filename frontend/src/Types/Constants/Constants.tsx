@@ -9,3 +9,9 @@ export type AxiosSettings = {
     withCredentials: boolean;
     validateStatus: (status: number) => boolean;
 };
+
+export type LoaderSettings = {
+    color: string;
+    size: number;
+    speedMultiplier: number;
+};

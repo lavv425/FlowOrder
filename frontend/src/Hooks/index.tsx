@@ -1,19 +1,10 @@
-import { useState, createContext } from "react";
-import { AppProviderProps, AppProviderReturn } from "../Types/Contexts/AppContext";
+import { useContext } from "react";
+import { AppContext } from "../Contexts/AppContext";
 
-export const AppContext = createContext<AppProviderReturn | null>(null);
-
-export const AppProvider = ({ children }: AppProviderProps) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const providerData: AppProviderReturn = {
-        isLoading,
-        setIsLoading,
-    };
-
-    return (
-        <AppContext.Provider value={providerData}>
-            {children}
-        </AppContext.Provider>
-    );
-}
+export const useAppContext = () => {
+    const context = useContext(AppContext);
+    if (!context) {
+        throw new Error("useAppContext must be used within an AppProvider");
+    }
+    return context;
+};

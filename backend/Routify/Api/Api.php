@@ -491,58 +491,66 @@ class Api extends Responder
             $uri = "$scheme://$host:$port";
 
             $server = new HttpServer(function (ServerRequestInterface $request) use ($rateLimiter): Response {
-                $startTime = microtime(true);
+                try {
+                    $startTime = microtime(true);
 
-                // Log incoming request if in debug mode
-                if (self::$logLevel === "debug") {
-                    self::log("debug", "Incoming request: " . json_encode([
-                        "method" => $request->getMethod(),
-                        "uri" => (string)$request->getUri(),
-                        "headers" => $request->getHeaders(),
-                        "body" => (string)$request->getBody(),
-                    ]));
-                }
+                    // Log incoming request if in debug mode
+                    if (self::$logLevel === "debug") {
+                        self::log("debug", "Incoming request: " . json_encode([
+                            "method" => $request->getMethod(),
+                            "uri" => (string)$request->getUri(),
+                            "headers" => $request->getHeaders(),
+                            "body" => (string)$request->getBody(),
+                        ]));
+                    }
 
-                // Identify the client by IP address
-                $clientIp = $request->getServerParams()["REMOTE_ADDR"] ?? "unknown";
+                    // Identify the client by IP address
+                    $clientIp = $request->getServerParams()["REMOTE_ADDR"] ?? "unknown";
 
-                if (!$rateLimiter->isAllowed($clientIp)) {
-                    return new Response(429, ["Content-Type" => "application/json"], json_encode([
+                    if (!$rateLimiter->isAllowed($clientIp)) {
+                        return new Response(429, ["Content-Type" => "application/json"], json_encode([
+                            "status" => "error",
+                            "message" => "Too many requests. Please try again later.",
+                        ]));
+                    }
+                    // Populate PHP's global variables
+                    self::configureGlobals($request);
+
+                    // Handle raw input
+                    $inputData = (string) $request->getBody();
+                    file_put_contents("php://input", $inputData);
+
+                    ob_start();
+                    self::dispatch();
+                    $output = ob_get_clean();
+
+                    $response = new Response(200, [
+                        "Content-Type" => "application/json",
+                        "Access-Control-Allow-Origin" => self::$allowedDefaultOrigin,
+                        "Access-Control-Allow-Methods" => "GET, POST, PUT, DELETE, OPTIONS",
+                        "Access-Control-Allow-Headers" => "Content-Type, Authorization",
+                        "Access-Control-Allow-Credentials" => "true",
+                    ], $output);
+
+                    // Log outgoing response if in debug mode
+                    if (self::$logLevel === "debug") {
+                        $endTime = microtime(true);
+                        self::log("debug", "Response sent: " . json_encode([
+                            "status" => 200,
+                            "headers" => ["Content-Type" => "application/json"],
+                            "body" => $output,
+                            "processing_time_ms" => round(($endTime - $startTime) * 1000, 2),
+                        ]));
+                    }
+
+                    return $response;
+                } catch (Exception $e) {
+                    self::log("error", "Unhandled request error: " . $e->getMessage());
+                    return new Response(500, ["Content-Type" => "application/json"], json_encode([
                         "status" => "error",
-                        "message" => "Too many requests. Please try again later.",
+                        "message" => "Internal Server Error",
                     ]));
                 }
-                // Populate PHP's global variables
-                self::configureGlobals($request);
-
-                // Handle raw input
-                $inputData = (string) $request->getBody();
-                file_put_contents("php://input", $inputData);
-
-                ob_start();
-                self::dispatch();
-                $output = ob_get_clean();
-
-                return new Response(200, [
-                    "Content-Type" => "application/json",
-                    "Access-Control-Allow-Origin" => self::$allowedDefaultOrigin,
-                    "Access-Control-Allow-Methods" => "GET, POST, PUT, DELETE, OPTIONS",
-                    "Access-Control-Allow-Headers" => "Content-Type, Authorization",
-                    "Access-Control-Allow-Credentials" => "true",
-                ], $output);
-
-                // Log outgoing response if in debug mode
-                if (self::$logLevel === "debug") {
-                    $endTime = microtime(true);
-                    self::log("debug", "Response sent: " . json_encode([
-                        "status" => 200,
-                        "headers" => ["Content-Type" => "application/json"],
-                        "body" => $output,
-                        "processing_time_ms" => round(($endTime - $startTime) * 1000, 2),
-                    ]));
-                }
-
-                return $response;
             });
 
             // SSL context for TLS
@@ -556,10 +564,10 @@ class Api extends Responder
             $loop->run();
         } catch (RuntimeException $re) {
             self::log("error", "Runtime exception: " . $re->getMessage());
-            throw $re;
+            // throw $re;
         } catch (Exception $e) {
             self::log("error", "Unexpected error: " . $e->getMessage());
-            throw $e;
+            // throw $e;
         }
     }
 

@@ -8,7 +8,8 @@ use Entity\Orders;
 use Routify\Api;
 
 /** 
- * 
+ * @route GET /api/orders
+ * Returns all orders in the database table orders.
  */
 
 function getOrders($entityManager): void

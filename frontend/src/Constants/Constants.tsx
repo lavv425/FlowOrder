@@ -1,5 +1,5 @@
 import T from "../Singletons/Typer";
-import { AxiosSettings } from "../Types/Constants/Constants";
+import { AxiosSettings, LoaderSettings } from "../Types/Constants/Constants";
 import { BASE_URL } from "./Endpoints";
 
 // Token for http requests
@@ -16,4 +16,11 @@ export const AXIOS_SETTINGS: AxiosSettings = {
     responseType: 'json',
     withCredentials: true,
     validateStatus: (status) => status >= 200 && status < 400,
+};
+
+// Loader settings for react-spinners
+export const LOADER_SETTINGS: LoaderSettings = {
+    color: T.isType("s", "#4811ad"),
+    size: T.isType("n", 75),
+    speedMultiplier: T.isType("n", 1.2),
 };
