@@ -1,12 +1,12 @@
 import { FC } from "react";
-import AddOrderModal from "../../Components/Modals/AddOrderDialog";
+import AddNewOrder from "../../Components/AddNewOrder/AddNewOrder";
 
 const Index: FC = () => {
     
     return (
         <div>
             <h1>Welcome to Iliad Orders Manager!</h1>
-            <AddOrderModal />
+            <AddNewOrder />
         </div>
     );
 };

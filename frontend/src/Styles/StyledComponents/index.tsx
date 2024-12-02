@@ -24,7 +24,11 @@ backdrop-filter: blur(1px);`;
 
 export const InputWrapper = styled.div`
 width:100%;
-position:relative;`;
+position:relative;
+
+    & .full-width {
+        width: -webkit-fill-available;
+    }`;
 
 export const StyledLabel = styled.label`
 color:#333;
@@ -43,8 +47,9 @@ box-sizing: border-box;
 font-size: 16px;
 color: #333;
 transition:0.1s;
-    
-    &:focus{
+font-family: inherit;
+
+    &:focus {
         border-color: #007BFF;
         outline: none;
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
@@ -63,6 +68,7 @@ color: #333;
 transition: 0.1s;
 resize: vertical;
 min-height: 100px;
+font-family: inherit;
 
     &:focus {
         border-color: #007BFF;
@@ -192,12 +198,8 @@ position: fixed;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
-background: #000;
+background: #fff;
+color: #fff;
 padding: 20px;
 border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-@media (prefers-color-scheme: light) {
-    background: #fff;
-    color: #fff;
-}`;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);`;

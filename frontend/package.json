@@ -13,10 +13,6 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@react-aria/dialog": "^3.5.20",
-    "@react-aria/interactions": "^3.22.5",
-    "@react-aria/overlays": "^3.24.0",
-    "@react-stately/overlays": "^3.6.12",
     "axios": "^1.7.8",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -24,7 +20,9 @@
     "react-select": "^5.8.3",
     "react-spinners": "^0.14.1",
     "react-tooltip": "^5.28.0",
-    "styled-components": "^6.1.13"
+    "styled-components": "^6.1.13",
+    "sweetalert2": "^11.14.5",
+    "sweetalert2-react-content": "^5.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

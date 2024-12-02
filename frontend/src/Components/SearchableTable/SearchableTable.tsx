@@ -5,7 +5,7 @@ import Table from "../Table/Table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { SearchableInputWrapper, TopSearchableWrapper } from "../StyledComponents";
-import { NO_ERR, NOT_FOUND_ERR } from "../../Constants/DefaultStates";
+import { NO_ERR, NOT_FOUND_ERR } from "../../Constants/Props";
 import Loader from "../Loader/Loader";
 import { AppContext } from "../../Contexts/AppProvider";
 import { useToday } from "../../Hooks/useToday";

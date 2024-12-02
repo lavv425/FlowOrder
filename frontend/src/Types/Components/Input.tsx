@@ -1,4 +1,9 @@
-export interface InputProps {
+export type TriggerErrorProps = {
+    isTriggered: boolean;
+    message: string;
+};
+
+export type InputProps = {
     type?: string;
     name: string;
     value: string;
@@ -9,7 +14,7 @@ export interface InputProps {
     customClass?: string;
     onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-    triggerError?: Record<string, boolean | string>;
+    triggerError?: TriggerErrorProps;
     customContainerClass?: string; 
     disabled?: boolean;
     readOnly?: boolean;

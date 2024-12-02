@@ -1,8 +1,9 @@
 import { FC } from "react";
 import { InputWrapper, StyledInput, StyledLabel, StyledTextArea } from "../../Styles/StyledComponents";
 import { InputProps } from "../../Types/Components/Input";
+import { NO_ERROR_INPUT } from "../../Constants/Constants";
 
-const Input: FC<InputProps> = ({ type, name, value, placeholder, label, isTextArea = false, customId, customClass, onKeyDown, onChange, triggerError = {}, customContainerClass, disabled = false, readOnly = false }) => {
+const Input: FC<InputProps> = ({ type, name, value, placeholder, label, isTextArea = false, customId, customClass, onKeyDown, onChange, triggerError = NO_ERROR_INPUT, customContainerClass, disabled = false, readOnly = false }) => {
     const InputComponent: React.ElementType = isTextArea ? StyledTextArea : StyledInput;
 
     return (
