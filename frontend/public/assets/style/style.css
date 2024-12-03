@@ -8,10 +8,31 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   color-scheme: light;
-  color: #213547;
-  background: #ffffff;
+  /* background: #ffffff; */
 }
-
+body {
+  margin: 0;
+  /* background: #fffbf3; */
+  color: #213547;
+  background: #dcdcdc;
+}
 .swal-wide {
   width: 90% !important;
+}
+
+.error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: #a10000;
+  font-size: 15px;
+}
+
+.errored {
+  border: 1px solid #a10000 !important;
+  box-shadow: 3px 4px 2px #a10000;
+}
+
+.errored:focus {
+  box-shadow: 0 0 5px #a10000 !important;
 }

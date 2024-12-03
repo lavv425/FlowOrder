@@ -508,10 +508,20 @@ class Api extends Responder
                     $clientIp = $request->getServerParams()["REMOTE_ADDR"] ?? "unknown";
 
                     if (!$rateLimiter->isAllowed($clientIp)) {
-                        return new Response(429, ["Content-Type" => "application/json"], json_encode([
-                            "status" => "error",
-                            "message" => "Too many requests. Please try again later.",
-                        ]));
+                        return new Response(
+                            429,
+                            [
+                                "Content-Type" => "application/json",
+                                "Access-Control-Allow-Origin" => self::$allowedDefaultOrigin,
+                                "Access-Control-Allow-Methods" => "GET, POST, PUT, DELETE, OPTIONS",
+                                "Access-Control-Allow-Headers" => "Content-Type, Authorization",
+                                "Access-Control-Allow-Credentials" => "true",
+                            ],
+                            json_encode([
+                                "status" => "error",
+                                "message" => "Too many requests. Please try again later.",
+                            ])
+                        );
                     }
                     // Populate PHP's global variables
                     self::configureGlobals($request);

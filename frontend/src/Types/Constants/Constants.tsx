@@ -1,3 +1,5 @@
+import { BookType } from "sheetjs-style";
+
 export type AxiosSettings = {
     baseURL: string;
     timeout: number;
@@ -14,4 +16,10 @@ export type LoaderSettings = {
     color: string;
     size: number;
     speedMultiplier: number;
+};
+
+export type XLSXDownloadOptions = {
+    bookType: BookType | undefined;
+    type: "string" | "file" | "binary" | "buffer" | "base64" | "array" | undefined;
+    compression: boolean;
 };

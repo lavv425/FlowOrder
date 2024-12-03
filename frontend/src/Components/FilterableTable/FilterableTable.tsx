@@ -1,24 +1,25 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, FC } from "react";
 import Select from "react-select";
-import SearchableTable from "./SearchableTable";
-import { FilterableTableWrapper, StyledButton } from "../StyledComponents";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { FilterableTableProps, FilterOption, SelectedFilters } from "../../Types/Components/FilterableTable";
+import SearchableTable from "../SearchableTable/SearchableTable";
+import { StyledButton } from "../../Styles/StyledComponents";
 
-const FilterableTable = ({ headers, body, customClass }) => {
+const FilterableTable: FC<FilterableTableProps> = ({ headers, body, customClass, canDownload = true }) => {
     const [filterMode, setFilterMode] = useState(false);
-    const [selectedFilters, setSelectedFilters] = useState({});
+    const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
     const columnOptions = useMemo(() => {
         if (!body) return {};
-        return headers.reduce((acc, header, index) => {
-            const uniqueValues = [...new Set(body.map((row) => row[index]))].map((value) => ({
+        return (headers as string[]).reduce((acc, header: string, index) => {
+            const uniqueValues = [...new Set((body as string[][]).map((row) => row[index]))].map((value) => ({
                 value,
                 label: String(value),
             }));
             acc[header] = uniqueValues;
             return acc;
-        }, {});
+        }, {} as Record<string, FilterOption[]>);
     }, [body, headers]);
 
     const filteredBody = useMemo(() => {
@@ -29,9 +30,11 @@ const FilterableTable = ({ headers, body, customClass }) => {
         );
 
         if (allFiltersEmpty) return body;
-        return body.filter((row) =>
-            row.every((cell, index) => {
-                const header = headers[index];
+
+        const arrayHeaders = Array.isArray(headers) ? headers : Object.values(headers);
+        return (body as string[][]).filter((row) =>
+            row.every((cell: string, index: number) => {
+                const header = arrayHeaders[index] as string;
                 const selectedFilter = selectedFilters[header];
                 if (!selectedFilter || !Boolean(selectedFilter.length)) return true;
                 return selectedFilter.some((filter) => filter.value === cell);
@@ -39,7 +42,7 @@ const FilterableTable = ({ headers, body, customClass }) => {
         );
     }, [body, headers, selectedFilters]);
 
-    const handleFilterChange = (header, selectedOptions) => {
+    const handleFilterChange = (header: string, selectedOptions: FilterOption[]) => {
         setSelectedFilters((prev) => {
             const updatedFilters = { ...prev };
 
@@ -65,25 +68,32 @@ const FilterableTable = ({ headers, body, customClass }) => {
             <SearchableTable
                 headers={
                     filterMode
-                        ? headers.map((header, index) => (
-                            header === "Azione" ? (
-                                <span key={index}>{header}</span>
-                            ) : (
-                                <Select
-                                    key={index}
-                                    options={columnOptions[header]}
-                                    isMulti
-                                    placeholder={`Filtra ${header}`}
-                                    value={selectedFilters[header] || []}
-                                    onChange={(selected) => handleFilterChange(header, selected)}
-                                    className="table-filters-select"
-                                />
+                        ? (Array.isArray(headers)
+                            ? headers.map((header, index) =>
+                                header === "Azione" ? (
+                                    <span key={index}>{header}</span>
+                                ) : (
+                                    <Select
+                                        key={index}
+                                        options={columnOptions[header as string]}
+                                        isMulti
+                                        placeholder={`Filtra ${header}`}
+                                        value={selectedFilters[header as string] || []}
+                                        onChange={(selected) => handleFilterChange(String(header), (selected as FilterOption[]))}
+                                        className="table-filters-select"
+                                    />
+                                )
                             )
-                        ))
-                        : headers
+                            : Object.values(headers).map((header, index) => (
+                                <span key={index}>{header}</span>
+                            )))
+                        : Array.isArray(headers)
+                            ? headers
+                            : Object.values(headers)
                 }
                 body={filteredBody}
                 customClass={customClass}
+                canDownload={canDownload}
             />
         </div>
     );

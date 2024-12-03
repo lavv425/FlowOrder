@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+export const StyledPagesWrapper = styled.div`
+padding:0;
+margin: 3%;`;
+
 export const Styled404Container = styled.div`
 width:40%;
 height:40%;

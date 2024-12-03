@@ -7,6 +7,10 @@ right: 0;
 width: 100px;
 z-index: -1;`;
 
+export const StyledH2Title = styled.h2`
+text-align:center;
+margin:1% 0 1% 0;`;
+
 export const LoaderWrapper = styled.div`
 position:fixed;
 top: 0;
@@ -100,74 +104,30 @@ display: block;
         background: #1b2772;
     }`;
 
-    
+
 export const StyledTableWrapper = styled.div`
 overflow-x: auto;
 overflow-y: hidden;
 white-space: nowrap;`;
 
-export const TopSearchableWrapper = styled.div`
+export const TopSearchableWrapper = styled.div<{ $canDownload: boolean }>`
 display: flex;
 flex-direction: row;
 justify-content: space-between;
 align-items: end;
 
-    & span{
-        transition: 0.2s;
-        margin: 8px;
-    }
-`;
-
-export const StyledTable = styled.table`
-min-width: 100%;
-margin-top:2%;
-border-collapse: collapse;
-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-background: #ffffff;`;
-
-export const StyledTableHead = styled.thead`
-background: #2d378b;
-color: white;
-text-wrap: nowrap;
-
-    & .table-filters-select{
-        color: black;
-        font-weight: normal;
-    }`;
-
-export const StyledTableRow = styled.tr`
-transition: 0.2s all;
-&:hover:not(thead tr) {
-background: #ededed;}
-
-& > td:last-child{
-min-width:10%;
-
-    & svg{
-    margin:5%;
-    cursor:pointer;
-    opacity:0.7;
-    transition: 0.2s all;
-
-        &:hover{
-        opacity:1;
-        scale:1.3;
+    & div {
+        margin-bottom: ${({ $canDownload }) => ($canDownload ? "10px" : "0")};
+        & svg {
+            margin-left: 10px;
         }
     }
-}`;
+    & span {
+        transition: 0.2s;
+        margin: 8px;
+    }`;
 
-export const StyledTableHeader = styled.th`
-padding: 12px;
-text-align: left;
-font-weight: bold;
-border-bottom: 1px solid #ddd;`;
-
-export const StyledTableData = styled.td`
-padding: 12px;
-text-align: left;
-border-bottom: 1px solid #ddd;`;
-
-export const StyledSearchableInputWrapper = styled.div`
+export const SearchableInputWrapper = styled.div`
 float:right;
 position: relative;
 
@@ -192,6 +152,56 @@ position: relative;
             color:#bf3a3a;
         }
     }`;
+
+export const StyledTable = styled.table`
+min-width: 100%;
+margin-top:2%;
+border-collapse: collapse;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+background: #ffffff;`;
+
+export const StyledTableHead = styled.thead`
+background: #2d378b;
+color: white;
+text-wrap: nowrap;
+
+    & .table-filters-select{
+        color: black;
+        font-weight: normal;
+    }`;
+
+export const StyledTableRow = styled.tr`
+transition: 0.2s all;
+    &:hover:not(thead tr) {
+        background: #ededed;
+    }
+
+    & > td:last-child{
+        min-width:10%;
+
+        & svg{
+        margin:5%;
+        cursor:pointer;
+        opacity:0.7;
+        transition: 0.2s all;
+
+            &:hover{
+            opacity:1;
+            scale:1.3;
+            }
+        }
+    }`;
+
+export const StyledTableHeader = styled.th`
+padding: 12px;
+text-align: left;
+font-weight: bold;
+border-bottom: 1px solid #ddd;`;
+
+export const StyledTableData = styled.td`
+padding: 12px;
+text-align: left;
+border-bottom: 1px solid #ddd;`;
 
 export const StyledModalDialogWrapper = styled.div`
 position: fixed;

@@ -11,6 +11,10 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         setIsLoading,
     };
 
+    String.prototype.normalizeForSearch = function () {
+        return this.trim().replace(/ /g, "").toLowerCase();
+    };
+
     return (
         <AppContext.Provider value={providerData}>
             {isLoading && <Loader />}

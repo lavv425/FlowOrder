@@ -19,8 +19,16 @@ function getOrders($entityManager): void
         $orderRepository = $entityManager->getRepository(Orders::class);
         $orders = $orderRepository->findAll();
 
+        // $order = new Orders();
+        // $order->setName("Test");
+        // $order->setDescription("Test bellolungo vediamo mpo");
+        // $order->setDate(new DateTime(date("Y-m-d"))); // Convert the date to a DateTime object
+
+        // // Persist the new order
+        // $entityManager->persist($order);
+        // $entityManager->flush();
         // Convert the orders to an array
-        $orderData = array_map(function (Orders $order) {
+        $orderData = array_map(function (Orders $order): array {
             return [
                 'id' => $order->getId(),
                 'name' => $order->getName(),

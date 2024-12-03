@@ -27,17 +27,17 @@ final class Version20241130162723 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $productsTable = $schema->createTable($this->constants["TABLE_NAMES"]["PRODUCTS_TABLE"]);
-        $productsTable->addColumn('id', 'integer', ['autoincrement' => true]);
-        $productsTable->addColumn('name', 'string', ['length' => 255]);
-        $productsTable->addColumn('price', 'decimal', ['precision' => 10, 'scale' => 2]);
-        $productsTable->addColumn('order_id', 'integer');
-        $productsTable->setPrimaryKey(['id']);
+        $productsTable->addColumn("id", "integer", ["autoincrement" => true]);
+        $productsTable->addColumn("name", "string", ["length" => 255]);
+        $productsTable->addColumn("price", "decimal", ["precision" => 10, "scale" => 2]);
+        $productsTable->addColumn("order_id", "integer");
+        $productsTable->setPrimaryKey(["id"]);
 
         $productsTable->addForeignKeyConstraint(
             $this->constants["TABLE_NAMES"]["ORDERS_TABLE"],
-            ['order_id'],
-            ['id'],
-            ['onDelete' => 'CASCADE']
+            ["order_id"],
+            ["id"],
+            ["onDelete" => "CASCADE"]
         );
     }
 
