@@ -53,3 +53,9 @@ export const NOT_FOUND_ERROR_INPUT = {
 }
 
 export const XLSX_DOWNLOAD_OPTIONS: XLSXDownloadOptions = { bookType: "xlsx", type: "file", compression: true };
+
+// Cache options
+export const CACHE_DB_NAME: string = "apiCache";
+export const CACHE_STORE_NAME: string = "cacheStore";
+export const CACHE_TTL: number = 15 * 1000; // 20SEC
+export const CACHE_EXCLUDED_ENDPOINTS: string[] = []; // Insert here the endpoints you want to exclude from caching

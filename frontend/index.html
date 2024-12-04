@@ -22,7 +22,7 @@
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
   <meta name="theme-color" content="#ffffff">
-  <meta name="msapplication-config" content="none"/>
+  <meta name="msapplication-config" content="none" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flow Order</title>
 </head>
@@ -30,6 +30,16 @@
 <body>
   <div id="flow_order"></div>
   <script type="module" src="/src/main.tsx"></script>
+  <script type="text/javascript">
+    /**
+     * sheet-js style gave me a headache, "QUOTE is not defined"
+     * became my recurrent dream.
+     * So i decided to just define the QUOTE variable as a global scope
+     * 
+     * I am sorry, I just wanted to use this library :)
+     */
+    var QUOTE; 
+  </script>
 </body>
 
 </html>

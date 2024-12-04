@@ -6,7 +6,7 @@ import { FilterableTableProps, FilterOption, SelectedFilters } from "../../Types
 import SearchableTable from "../SearchableTable/SearchableTable";
 import { StyledButton } from "../../Styles/StyledComponents";
 
-const FilterableTable: FC<FilterableTableProps> = ({ headers, body, customClass, canDownload = true }) => {
+const FilterableTable: FC<FilterableTableProps> = ({ headers, body, customClass, canDownload = false, exportFilename = "" }) => {
     const [filterMode, setFilterMode] = useState(false);
     const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({});
 
@@ -64,7 +64,7 @@ const FilterableTable: FC<FilterableTableProps> = ({ headers, body, customClass,
     }, [filterMode]);
     return (
         <div className="filterable-table">
-            {(Boolean(headers.length) && Boolean(body.length)) && <StyledButton onClick={handleFilterModeChange} className="flex-button force-height"><FontAwesomeIcon icon={filterMode ? faFilterCircleXmark : faFilter} />{filterMode ? "Esci dalla modalità filtro" : "Filtra"}</StyledButton>}
+            {(!!headers.length && !!body.length) && <StyledButton onClick={handleFilterModeChange} className="flex-button force-height"><FontAwesomeIcon icon={filterMode ? faFilterCircleXmark : faFilter} />{filterMode ? "Deactivate filters" : "Activate filters"}</StyledButton>}
             <SearchableTable
                 headers={
                     filterMode
@@ -94,6 +94,7 @@ const FilterableTable: FC<FilterableTableProps> = ({ headers, body, customClass,
                 body={filteredBody}
                 customClass={customClass}
                 canDownload={canDownload}
+                exportFilename={exportFilename}
             />
         </div>
     );

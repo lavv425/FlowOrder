@@ -47,8 +47,6 @@ namespace Routify;
 
 require_once __DIR__ . "/Abstracts/Responder.php";
 
-require_once __DIR__ . "/../../vendor/autoload.php";
-
 use Exception;
 use RuntimeException;
 
@@ -124,6 +122,13 @@ class Api extends Responder
      * The current log level for the API framework.
      */
     private static $logLevel = "info";
+
+    /**
+     * @var array $middlewares
+     * Array to store registered middlewares.
+     */
+    private static array $middlewares = [];
+
     /**
      * @var array $routes
      * An associative array of defined routes mapped by HTTP method and path.
@@ -242,6 +247,36 @@ class Api extends Responder
     public static function DELETE(string $path, callable $callback): void
     {
         self::addRoute("DELETE", trim($path), $callback);
+    }
+
+    /**
+     * Registers a middleware to be executed before route handling.
+     *
+     * @param callable $middleware The middleware callback.
+     * @return void
+     */
+    public static function registerMiddleware(callable $middleware): void
+    {
+        self::$middlewares[] = $middleware;
+    }
+
+    /**
+     * Executes all registered middlewares in the order they were added.
+     *
+     * @param ServerRequestInterface $request The PSR-7 request object.
+     * @return bool Returns false if a middleware blocks the request, otherwise true.
+     */
+    private static function executeMiddlewares(ServerRequestInterface $request): bool
+    {
+        foreach (self::$middlewares as $middleware) {
+            // If any middleware returns false, stop execution
+            $continue = $middleware($request);
+            if ($continue === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -374,6 +409,7 @@ class Api extends Responder
 
     /**
      * Dispatches the incoming request to the appropriate route.
+     * Executes middlewares before checking for matching routes.
      */
     public static function dispatch(): void
     {
@@ -392,28 +428,36 @@ class Api extends Responder
 
         $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-        // Ciclo attraverso le rotte per vedere se c'è una corrispondenza con parametri dinamici
+        // Execute middlewares before processing routes
+        $request = new \React\Http\Message\ServerRequest($method, $path); // Create a PSR-7 request object
+        if (!self::executeMiddlewares($request)) {
+            // A middleware blocked the request
+            return;
+        }
+
+        // Iterate through routes to find a match with dynamic parameters
         foreach (self::$routes[$method] as $route => $callback) {
-            // Sostituisci {parametro} con una regex per catturare i valori
+            // Replace {parameter} with a regex to capture values
             $pattern = preg_replace("/\{[a-zA-Z0-9_]+\}/", "([a-zA-Z0-9_=\-]+)", $route);
+            // Alternative pattern (previous version)
             // $pattern = preg_replace("/\{[a-zA-Z0-9_]+\}/", "([a-zA-Z0-9_]+)", $route);
             $pattern = str_replace("/", "\/", $pattern);
             $pattern = "/^" . $pattern . "$/";
 
-            // Verifica se il percorso richiesto corrisponde al pattern della rotta
+            // Check if the requested path matches the route's pattern
             if (preg_match($pattern, $path, $matches)) {
-                array_shift($matches); // Rimuovi il primo elemento che è il percorso completo
+                array_shift($matches); // Remove the first element, which is the full path
 
                 if (is_callable($callback)) {
-                    // Verifica se la callback è un array (classe e metodo)
+                    // Check if the callback is an array (class and method)
                     if (is_array($callback) && count($callback) === 2 && is_object($callback[0]) && is_string($callback[1])) {
                         $classInstance = $callback[0];
                         $methodName = $callback[1];
 
-                        // Chiama il metodo sulla classe e ottieni il risultato
+                        // Call the method on the class and get the result
                         $response = call_user_func_array([$classInstance, $methodName], $matches);
 
-                        // Invia il risultato come risposta
+                        // Send the result as a response
                         self::responder("success", $response, "Request successful", 200);
                     } else {
                         // If the callback is not a valid array, call it normally
@@ -427,7 +471,7 @@ class Api extends Responder
             }
         }
 
-        // Controlla se la rotta esiste ma con un metodo diverso
+        // Check if the route exists but with a different HTTP method
         if (self::routeExistsForDifferentMethod($path)) {
             self::handleError(405, "Method Not Allowed.");
         } else {
@@ -709,10 +753,10 @@ class Api extends Responder
     private static function handleError(int $statusCode, string $message): void
     {
         self::cors(
-            ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Metodi permessi
-            self::$allowedDefaultOrigin,                     // Origine consentita
-            ["Content-Type", "Authorization"],          // Header consentiti
-            true                                        // Credenziali consentite
+            ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            self::$allowedDefaultOrigin,
+            ["Content-Type", "Authorization"],
+            true
         );
         self::responder("error", null, $message, $statusCode);
     }
@@ -731,10 +775,10 @@ class Api extends Responder
         $type = strtolower($type);
 
         self::cors(
-            ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Metodi permessi
-            self::$allowedDefaultOrigin,                     // Origine consentita
-            ["Content-Type", "Authorization"],          // Header consentiti
-            true                                        // Credenziali consentite
+            ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            self::$allowedDefaultOrigin,
+            ["Content-Type", "Authorization"],
+            true
         );
 
         self::responder($type, $data, $sentMessage, $statusCode);

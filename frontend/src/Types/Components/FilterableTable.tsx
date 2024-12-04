@@ -5,6 +5,7 @@ export type FilterableTableProps = {
     body: TableProps["body"];
     customClass?: TableProps["customClass"];
     canDownload?: boolean;
+    exportFilename?: string;
 };
 
 export type FilterOption = { value: string; label: string };

@@ -4,4 +4,10 @@ declare global {
     }
 }
 
+declare module "axios" {
+    export interface AxiosRequestConfig {
+        doNotCache?: boolean;
+    }
+}
+
 export { };

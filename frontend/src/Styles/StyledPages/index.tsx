@@ -31,3 +31,45 @@ transform: translate(-50%,-50%);
             color:black;
         }
     }`;
+
+export const StyledOrderFormContainer = styled.div`
+margin: 3%;`;
+
+export const StyledProductRow = styled.div`
+display: flex;
+align-items: center;
+gap: 1rem;
+
+    & .product-name-input,
+    & .product-price-input {
+        flex: 1;
+        width: -webkit-fill-available;
+    }
+
+    & .button-container {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center; /* Center buttons horizontally */
+        min-width: 80px; /* Ensure consistent space */
+    }
+
+    & .add-product-button,
+    & .remove-product-button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #007bff;
+    }
+
+    & .add-product-button:disabled,
+    & .remove-product-button:disabled {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+        
+    @media screen and (max-width: 768px) {
+        width: 35%;
+        gap: 10px;
+        align-items: self-end;
+    }`;

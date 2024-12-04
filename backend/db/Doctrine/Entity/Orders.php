@@ -19,7 +19,7 @@ class Orders
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $description;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column(type: "date")]
     private \DateTime $date;
 
     // Getters and Setters
@@ -54,8 +54,14 @@ class Orders
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): void
+    public function setDate(string $date): void
     {
-        $this->date = $date;
+        $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
+
+        if (!$dateTime) {
+            throw new \InvalidArgumentException("Invalid date format. Expected Y-m-d.");
+        }
+    
+        $this->date = $dateTime;
     }
 }

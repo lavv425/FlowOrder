@@ -1,22 +1,26 @@
 import { FC, useCallback, useEffect, useState } from "react";
-import * as XLSX from 'sheetjs-style';
+import * as XLSX from "xlsx";
+import Loader from "../Loader/Loader";
 import Table from "../Table/Table";
+import Input from "../Input/Input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileArrowDown, faXmark } from "@fortawesome/free-solid-svg-icons";
-import Loader from "../Loader/Loader";
 import { NO_ERROR_INPUT, NOT_FOUND_ERROR_INPUT, XLSX_DOWNLOAD_OPTIONS } from "../../Constants/Constants";
-import { useAppContext, useToday } from "../../Hooks";
+import useError, { useAppContext, useToday } from "../../Hooks";
 import { SearchableTableProps } from "../../Types/Components/SearchableTable";
 import { SearchableInputWrapper, TopSearchableWrapper } from "../../Styles/StyledComponents";
-import Input from "../Input/Input";
+import { ErrorType } from "../../Types/Hooks/Hooks";
 
 const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass, canDownload = false, exportFilename = "" }) => {
     const { setIsLoading } = useAppContext();
+    const { handleError } = useError();
+    const today = useToday();
+
     const [searchedValue, setSearchedValue] = useState(() => new URLSearchParams(window.location.search).get("q") || "");
     const [found, setFound] = useState(0);
     const [searchErr, setSearchErr] = useState(NO_ERROR_INPUT);
     const [isSearching, setIsSearching] = useState(false);
-    const today = useToday();
+
     const customTableClass = `searchable-table ${customClass}`.trim();
 
     /** 
@@ -80,51 +84,53 @@ const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass,
     /**
      * Downloads the table data as an Excel file.
      */
-    // const handleDownloadExcel = useCallback(() => {
-    //     setIsLoading(true);
+    const handleDownloadExcel = useCallback(() => {
+        setIsLoading(true);
 
-    //     /**
-    //      * This component supports a lot of different approaches, so unfortunately, "as unknown as T" saves my life.
-    //     */
-    //     try {
-    //         if (!Array.isArray(headers) || headers.length === 0) {
-    //             console.error("Headers are invalid or empty.");
-    //             setIsLoading(false);
-    //             return;
-    //         }
+        try {
+            if (!Array.isArray(headers) || headers.length === 0) {
+                console.error("Headers are invalid or empty.");
+                setIsLoading(false);
+                return;
+            }
 
-    //         const formattedHeaders = (headers as string[]).map((header, index) => ({
-    //             key: `col_${index}`,
-    //             header,
-    //         }));
+            // Filter headers to exclude those containing "Action"
+            const formattedHeaders = (headers as string[]).map((header, index) => ({
+                key: `col_${index}`,
+                header,
+            })).filter(header => !header.header.includes("Action"));
 
-    //         console.log("Formatted headers:", formattedHeaders);
-    //         const formattedBody = body.length > 0
-    //             ? (body as string[][]).map(row =>
-    //                 formattedHeaders.reduce<Record<string, string>>((acc, header, index) => {
-    //                     acc[header.header] = row[index] || "";
-    //                     return acc;
-    //                 }, {})
-    //             )
-    //             : [formattedHeaders.reduce<Record<string, string>>((acc, header) => {
-    //                 acc[header.header] = "No data available";
-    //                 return acc;
-    //             }, {})];
+            // Find indices of headers to exclude
+            const excludedIndices = (headers as string[])
+                .map((header, index) => (header.includes("Action") ? index : -1))
+                .filter(index => index !== -1);
 
-    //         const worksheet = XLSX.utils.json_to_sheet(formattedBody);
+            // Filter body to remove columns corresponding to excluded indices
+            const formattedBody = (body as string[][]).map(row =>
+                formattedHeaders.reduce<Record<string, string>>((acc, header, index) => {
+                    // Add only the columns that are not excluded
+                    if (!excludedIndices.includes(index)) {
+                        acc[header.header] = row[index] || "";
+                    }
+                    return acc;
+                }, {})
+            );
 
-    //         XLSX.utils.sheet_add_aoa(worksheet, [(headers as unknown as string[])], { origin: "A1" });
+            // Create the worksheet with filtered headers and body
+            const worksheet = XLSX.utils.json_to_sheet(formattedBody);
 
-    //         const workbook = XLSX.utils.book_new();
-    //         XLSX.utils.book_append_sheet(workbook, worksheet, exportFilename);
-    //         XLSX.writeFile(workbook, `${exportFilename} ${today}.xlsx`, XLSX_DOWNLOAD_OPTIONS);
-    //     } catch (error) {
-    //         console.error("Error while generating Excel file:", error);
-    //         alert("An error occurred while generating the Excel file.");
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // }, [setIsLoading, headers, body, today, exportFilename]);
+            XLSX.utils.sheet_add_aoa(worksheet, [(headers as unknown as string[])], { origin: "A1" });
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, exportFilename);
+            XLSX.writeFile(workbook, `${exportFilename} ${today}.xlsx`, XLSX_DOWNLOAD_OPTIONS);
+        } catch (error) {
+            handleError(error as ErrorType);
+            console.error("Error while generating Excel file:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [setIsLoading, headers, body, today, exportFilename]);
 
 
     useEffect(() => {
@@ -176,10 +182,10 @@ const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass,
                             :
                             <span><b>{body.length}</b> results</span>
                         }
-                        {/* {canDownload && <FontAwesomeIcon icon={faFileArrowDown} size="xl" onClick={handleDownloadExcel} style={{ color: "#2832bd" }} />} */}
+                        {canDownload && <FontAwesomeIcon icon={faFileArrowDown} size="xl" onClick={handleDownloadExcel} data-tooltip-id="helper-tooltip" data-tooltip-content="Click to download the table in Excel format" style={{ color: "#2832bd" }} />}
                     </div>
                     <SearchableInputWrapper>
-                        {Boolean(body.length) && <Input name="table-search-input" type="text" value={searchedValue} onChange={(e) => setSearchedValue(e.target.value)} customClass="searchable-input" triggerError={searchErr} placeholder="Search for anything inside the table" />}
+                        {!!body.length && <Input name="table-search-input" type="text" value={searchedValue} onChange={(e) => setSearchedValue(e.target.value)} customClass="searchable-input" triggerError={searchErr} placeholder="Search for anything inside the table" />}
                         {searchedValue && <FontAwesomeIcon icon={faXmark} size="lg" onClick={() => setSearchedValue("")} />}
                     </SearchableInputWrapper>
                 </TopSearchableWrapper>

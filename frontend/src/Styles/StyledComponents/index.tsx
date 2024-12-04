@@ -40,6 +40,24 @@ margin-bottom:8px;
 display:block;
 text-align:center;`;
 
+export const StyledInputContainer = styled.div`
+display: flex;
+align-items: center;
+position: relative;
+border-radius: 4px;
+overflow: hidden;
+
+    & .input-prefix {
+        background-color: #f1f1f1;
+        color: #333;
+        padding: 10px 12px;
+        font-size: 1rem;
+        white-space: nowrap;
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+`;
+
 export const StyledInput = styled.input`
 padding: 10px 12px;
 margin-top: 5px;
@@ -83,6 +101,7 @@ font-family: inherit;
 
 export const StyledButton = styled.button`
 color: #fff;
+font-size: 14px;
 // background: #007BFF;
 background:#0062cb;
 border: none;
@@ -120,6 +139,12 @@ align-items: end;
         margin-bottom: ${({ $canDownload }) => ($canDownload ? "10px" : "0")};
         & svg {
             margin-left: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+
+            &:hover{
+                scale: 1.1;
+            }
         }
     }
     & span {
@@ -213,3 +238,22 @@ color: #fff;
 padding: 20px;
 border-radius: 8px;
 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);`;
+
+export const StyledHelperIconContainer = styled.div`
+width: 30px;
+height: 30px;
+background: #197ad2;
+display: flex;
+justify-content: center;
+align-items: center;
+border-radius: 50%;
+cursor: pointer;
+opacity: 0.8;
+position: absolute;
+top: 20px;
+right: 25px;
+transition: 0.2s;
+
+    &:hover {
+        opacity: 1;
+    }`;

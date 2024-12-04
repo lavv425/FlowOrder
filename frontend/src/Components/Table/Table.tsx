@@ -9,7 +9,7 @@ const Table: FC<TableProps> = ({ headers, body, customClass, wrapInDiv = true })
         if (headers && !Array.isArray(headers)) {
             return Object.values(headers);
         }
-        return T.isArrayOf("s", headers);
+        return headers;
     }, [headers]);
 
     // If body is an object, it converts it in an array of arrays
@@ -24,7 +24,7 @@ const Table: FC<TableProps> = ({ headers, body, customClass, wrapInDiv = true })
         <StyledTable className={customClass}>
             <StyledTableHead>
                 <StyledTableRow>
-                    {processedHeaders ? processedHeaders?.map((header: string, index: number) => {
+                    {processedHeaders ? processedHeaders?.map((header: string | React.ReactNode, index: number) => {
                         return <StyledTableHeader key={index}>{header}</StyledTableHeader>
                     })
                         :

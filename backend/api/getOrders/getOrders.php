@@ -22,7 +22,7 @@ function getOrders($entityManager): void
         // $order = new Orders();
         // $order->setName("Test");
         // $order->setDescription("Test bellolungo vediamo mpo");
-        // $order->setDate(new DateTime(date("Y-m-d"))); // Convert the date to a DateTime object
+        // $order->setDate(date("Y-m-d")); // Convert the date to a DateTime object
 
         // // Persist the new order
         // $entityManager->persist($order);
@@ -33,7 +33,7 @@ function getOrders($entityManager): void
                 'id' => $order->getId(),
                 'name' => $order->getName(),
                 'description' => $order->getDescription(),
-                'date' => $order->getDate()->format('Y-m-d H:i:s'),
+                'date' => $order->getDate()->format('Y-m-d'),
             ];
         }, $orders);
 
