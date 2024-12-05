@@ -6,7 +6,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . "/../");
 // Load the environment variables into the current process. (available in )
 $dotenv->load();
 // Define required variables and load them into the environment.
-$dotenv->required(["DB_HOST", "DB_USERNAME", "DB_PASSWORD", "DB_SCHEMA", "ALLOWED_ORIGIN", "ROUTIFY_SERVER_HOST", "ROUTIFY_SERVER_PORT"]);
+$dotenv->required(["DB_HOST", "DB_USERNAME", "DB_PASSWORD", "DB_SCHEMA", "ALLOWED_ORIGIN", "ROUTIFY_SERVER_HOST", "ROUTIFY_SERVER_PORT", "ROUTIFY_SERVER_SSL_CERT_FILE", "ROUTIFY_SERVER_SSL_KEY_FILE"]);
 $config =  (array) [
     "ENTITIES_DIR" => realpath(__DIR__ . "/../db/Doctrine/Entity"),
     "ALLOWED_ORIGIN" => $_ENV["ALLOWED_ORIGIN"],
@@ -22,6 +22,8 @@ $config =  (array) [
         "port" => $_ENV["ROUTIFY_SERVER_PORT"],
         "rate_limit" => $_ENV["ROUTIFY_SERVER_RATE_LIMIT"], // 50 requests per (see time_frame)
         "time_frame" => $_ENV["ROUTIFY_SERVER_RATE_LIMIT_TIME_FRAME"], // 60 seconds, 1 minute
+        "ssl_cert_file" => $_ENV["ROUTIFY_SERVER_SSL_CERT_FILE"],
+        "ssl_key_file" => $_ENV["ROUTIFY_SERVER_SSL_KEY_FILE"],
         "logger_level" => "debug",
     ],
 ];

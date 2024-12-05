@@ -35,6 +35,8 @@
      ROUTIFY_SERVER_PORT=8080
      ROUTIFY_SERVER_RATE_LIMIT=50
      ROUTIFY_SERVER_RATE_LIMIT_TIME_FRAME=60
+     ROUTIFY_SERVER_SSL_CERT_FILE="path/to/ssl_cert_file"
+     ROUTIFY_SERVER_SSL_KEY_FILE="path/to/ssl_key_file"
      ```
      - Replace `your_password` with the database password.
      - Replace `the_frontend_origin` with the frontend’s origin (e.g., `http://localhost:3000`).
