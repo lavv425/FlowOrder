@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "serve": "serve -s dist -l 3004",
-    "build_pm2": "tsc -b && vite build && pm2 del \"flow_order_frontend_v1\" && pm2 start npm --name \"bluechat_frontend_v1\" -- run serve",
+    "build_pm2": "tsc -b && vite build && pm2 del \"flow_order_frontend_v1\" && pm2 start npm --name \"flow_order_frontend_v1\" -- run serve",
     "lint": "eslint .",
     "preview": "vite preview"
   },
