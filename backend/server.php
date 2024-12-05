@@ -11,7 +11,7 @@
 
 // Commented for production
 // ini_set("display_errors", E_ALL);
-// ini_set("memory_limit", "256M");
+ini_set("memory_limit", "256M");
 set_time_limit(300);
 require_once __DIR__ . "/Routify/vendor/autoload.php";
 $config = require_once __DIR__ . "/constants/config.php";
