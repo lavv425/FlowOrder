@@ -31,7 +31,7 @@ This project consists of two main parts:
 
 2. **Environment File**:
 
-   - Navigate to the `/Backend/` directory.
+   - Navigate to the `/backend/` directory.
    - Create a `.env` file based on `.env.example`.
    - Example `.env` content:
      ```env
@@ -68,7 +68,7 @@ This project consists of two main parts:
 #### Frontend
 
 1. **Install Dependencies**:
-   Navigate to the `/Frontend/` directory and run:
+   Navigate to the `/frontend/` directory and run:
 
    ```bash
    npm install
@@ -76,7 +76,7 @@ This project consists of two main parts:
 
 2. **Update Configuration (If Necessary)**:
 
-   - Modify `/Frontend/src/Constants/Endpoints.tsx` to set the correct `BASE_URL` for the Routify backend.
+   - Modify `/frontend/src/Constants/Endpoints.tsx` to set the correct `BASE_URL` for the Routify backend.
      Example:
      ```typescript
      export const BASE_URL = "http://127.0.0.1:8080/api";

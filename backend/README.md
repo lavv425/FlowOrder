@@ -22,7 +22,7 @@
 
 2. **Environment File**:
 
-   - Navigate to the `/Backend/` directory.
+   - Navigate to the `/backend/` directory.
    - Create a `.env` file based on `.env.example`.
    - Example `.env` content:
      ```env
