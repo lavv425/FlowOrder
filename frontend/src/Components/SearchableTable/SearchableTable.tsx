@@ -185,7 +185,7 @@ const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass,
                         {canDownload && <FontAwesomeIcon icon={faFileArrowDown} size="xl" onClick={handleDownloadExcel} data-tooltip-id="helper-tooltip" data-tooltip-content="Click to download the table in Excel format" style={{ color: "#2832bd" }} />}
                     </div>
                     <SearchableInputWrapper>
-                        {!!body.length && <Input name="table-search-input" type="text" value={searchedValue} onChange={(e) => setSearchedValue(e.target.value)} customClass="searchable-input" triggerError={searchErr} placeholder="Search for anything inside the table" />}
+                        {!!body.length && <Input customContainerClass="searchable-input-wrapper" name="table-search-input" type="text" value={searchedValue} onChange={(e) => setSearchedValue(e.target.value)} customClass="searchable-input" triggerError={searchErr} placeholder="Search for anything inside the table" />}
                         {searchedValue && <FontAwesomeIcon icon={faXmark} size="lg" onClick={() => setSearchedValue("")} />}
                     </SearchableInputWrapper>
                 </TopSearchableWrapper>

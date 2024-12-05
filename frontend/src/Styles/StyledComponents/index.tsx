@@ -136,7 +136,11 @@ justify-content: space-between;
 align-items: end;
 
     & div {
-        margin-bottom: ${({ $canDownload }) => ($canDownload ? "10px" : "0")};
+        margin-bottom: ${({ $canDownload }) => ($canDownload ? "1px" : "0")};
+
+        & div input {
+            margin-bottom: 0 !important;
+        }
         & svg {
             margin-left: 10px;
             cursor: pointer;
@@ -156,6 +160,9 @@ export const SearchableInputWrapper = styled.div`
 float:right;
 position: relative;
 
+    & .searchable-input-wrapper {
+        margin-top: 0 !important;
+    }
     & .error{
         top: -25px;
         left: 205px;
