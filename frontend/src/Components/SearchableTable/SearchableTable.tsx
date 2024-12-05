@@ -106,15 +106,15 @@ const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass,
                 .filter(index => index !== -1);
 
             // Filter body to remove columns corresponding to excluded indices
-            const formattedBody = (body as string[][]).map(row =>
-                formattedHeaders.reduce<Record<string, string>>((acc, header, index) => {
-                    // Add only the columns that are not excluded
+            const formattedBody = (body as string[][]).map(row => {
+                return headers.reduce<Record<string, string>>((acc, header, index) => {
                     if (!excludedIndices.includes(index)) {
-                        acc[header.header] = row[index] || "";
+                        const key = (header as string)?.trim(); // Use the original header name as key
+                        acc[key] = row[index] || "";
                     }
                     return acc;
-                }, {})
-            );
+                }, {});
+            });
 
             const headerRow = formattedHeaders.map(header => header.header);
             // Create the worksheet with filtered headers and body
