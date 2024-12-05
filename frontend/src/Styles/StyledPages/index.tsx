@@ -5,7 +5,7 @@ padding:0;
 margin: 3%;`;
 
 export const StyledInsidePagesWrapper = styled.div`
-margin-top: 35px;`;
+margin-top: 30px;`;
 
 export const Styled404Container = styled.div`
 width:40%;

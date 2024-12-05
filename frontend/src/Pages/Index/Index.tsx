@@ -114,7 +114,7 @@ const Index: FC = () => {
         <StyledPagesWrapper>
             <StyledH2Title>Flow Order - <span style={{ color: "#C2252A" }}>Iliad</span>&#8482; Orders Manager</StyledH2Title>
             <StyledInsidePagesWrapper>
-                <StyledButton className="flex-button" onClick={() => nav(NEW_ORDER)}><FontAwesomeIcon icon={faPlus} size="lg" />Insert a new order</StyledButton>
+                <StyledButton className="flex-button new-order-button" onClick={() => nav(NEW_ORDER)}><FontAwesomeIcon icon={faPlus} size="lg" />Insert a new order</StyledButton>
                 <FilterableTable customClass="orders-table" headers={headers} body={body} canDownload exportFilename="Orders" />
             </StyledInsidePagesWrapper>
         </StyledPagesWrapper>

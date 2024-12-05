@@ -118,7 +118,6 @@ input[type="number"] {
   appearance: textfield;
 }
 
-
 .orders-table tbody td:first-child svg {
   margin: 3%;
   cursor: pointer;
@@ -145,7 +144,6 @@ input[type="number"] {
     min-width: 10%;
   }
 
-
   .orders-table thead th:first-child,
   .orders-table tbody td:first-child {
     position: -webkit-sticky;
@@ -156,5 +154,12 @@ input[type="number"] {
     backdrop-filter: blur(8px);
     box-shadow: 1px 0 0 #000000;
     text-overflow: unset;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .new-order-button {
+    position: absolute;
+    top: 25px;
   }
 }
