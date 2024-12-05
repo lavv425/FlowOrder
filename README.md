@@ -25,7 +25,7 @@ This project consists of two main parts:
      ```sql
      CREATE DATABASE flow_order;
      CREATE USER 'flow_order'@'localhost' IDENTIFIED BY 'your_password';
-     GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER ON flow_order.* TO 'flow_order'@'localhost';
+     GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, CREATE, ALTER, INDEX, DROP ON flow_order.* TO 'flow_order'@'localhost';
      FLUSH PRIVILEGES;
      ```
 
