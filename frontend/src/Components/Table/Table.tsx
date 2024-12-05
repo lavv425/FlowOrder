@@ -15,7 +15,7 @@ const Table: FC<TableProps> = ({ headers, body, customClass, wrapInDiv = true })
     // If body is an object, it converts it in an array of arrays
     const processedBody = useMemo(() => {
         if (body && !Array.isArray(body)) {
-            return Object.entries(body).map(([key, value]) => value);
+            return Object.entries(body).map(([_, value]) => value);
         }
         return T.isArrayOf("a", body);
     }, [body]);

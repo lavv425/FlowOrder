@@ -49,14 +49,13 @@ const CustomDatePicker: FC<CustomDatePickerProps> = ({ dateState, label, placeho
             <DatePicker
                 className={(
                     triggerError.isTriggered
-                        ? "errored full-w-input react-datepicker-input"
-                        : "full-w-input react-datepicker-input"
+                        ? "errored full-w react-datepicker-input"
+                        : "full-w react-datepicker-input"
                 ).trim()}
                 shouldCloseOnSelect={true}
                 todayButton="Today"
                 selected={date ? new Date(date) : null}
                 dateFormat="dd/MM/yyyy"
-                isClearable={true}
                 withPortal={true}
                 onChange={(val) => { handleDatePickerChange(val) }}
                 placeholderText={placeholder}

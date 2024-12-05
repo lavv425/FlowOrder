@@ -4,6 +4,9 @@ export const StyledPagesWrapper = styled.div`
 padding:0;
 margin: 3%;`;
 
+export const StyledInsidePagesWrapper = styled.div`
+margin-top: 35px;`;
+
 export const Styled404Container = styled.div`
 width:40%;
 height:40%;
@@ -51,6 +54,7 @@ gap: 1rem;
         gap: 0.5rem;
         justify-content: center; /* Center buttons horizontally */
         min-width: 80px; /* Ensure consistent space */
+        margin-top: 30px;
     }
 
     & .add-product-button,
@@ -73,3 +77,81 @@ gap: 1rem;
         gap: 10px;
         align-items: self-end;
     }`;
+
+
+export const StyledPageWrapper = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+margin: 2rem auto;
+max-width: 800px;
+padding: 1rem;
+background: #f9f9f9;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+`;
+
+export const StyledTitle = styled.h2`
+font-size: 2rem;
+margin-bottom: 1rem;
+color: #333;
+text-align: center;
+`;
+
+export const StyledOrderContainer = styled.div`
+width: 90%;
+padding: 1rem;
+background: #fff;
+border-radius: 8px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+margin: auto;
+@media screen and (max-width: 768px) {
+    margin-top: 50px;
+}
+`;
+
+export const StyledOrderInfo = styled.div`
+margin-bottom: 1.5rem;
+    & p {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+        color: #555;
+        strong {
+        color: #222;
+        }
+    }`;
+
+export const StyledProductsTitle = styled.h3`
+font-size: 1.5rem;
+color: #444;
+margin-bottom: 1rem;
+`;
+
+export const StyledProductList = styled.div`
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 1rem;
+`;
+
+export const StyledProductCard = styled.div`
+padding: 1rem;
+background: #fff;
+border: 1px solid #ddd;
+border-radius: 8px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    & p {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+        color: #555;
+        strong {
+        color: #222;
+        }
+    }
+`;

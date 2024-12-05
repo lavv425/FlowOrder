@@ -86,11 +86,14 @@ export const invalidateCache = async (key: InvalidaCacheKeyType) => {
 
         if (key === "allCachedItems") {
             store.clear();
+            console.log("Cleared all cache items");
         } else {
             store.delete(key);
+            console.log(`Deleted cache for key: ${key}`);
         }
-
+        
         await waitForTransactionComplete(tx);
+        console.log("Transaction completed");
     } catch (error) {
         if (key === "allCachedItems") {
             localStorage.clear();

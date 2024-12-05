@@ -1,24 +1,26 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import ApiClient from "../../Services/ApiClient";
 import useError, { useAppContext } from "../../Hooks";
-import { DATE_ERROR_INPUT, DESCRIPTION_ERROR_INPUT, DUPLICATE_PRODUCT_ERROR_INPUT, generateLengthError, NAME_ERROR_INPUT, NO_ERROR_INPUT, PRODUCT_NAME_ERROR_INPUT, PRODUCT_PRICE_ERROR_INPUT } from "../../Constants/Constants";
-import { Product } from "../../Types/Components/NewOrder";
-import { StyledButton, StyledH2Title } from "../../Styles/StyledComponents";
-import { StyledOrderContainer, StyledPagesWrapper, StyledProductRow } from "../../Styles/StyledPages";
-import Input from "../../Components/Input/Input";
-import GoToHome from "../../Components/GoToHome/GoToHome";
-import CustomDatePicker from "../../Components/CustomDatePicker/CustomDatePicker";
+import { GET_ORDER_DETAILS, UPDATE_ORDER } from "../../Constants/Endpoints";
 import HelperIcon from "../../Components/HelperIcon/HelperIcon";
+import GoToHome from "../../Components/GoToHome/GoToHome";
+import Input from "../../Components/Input/Input";
+import CustomDatePicker from "../../Components/CustomDatePicker/CustomDatePicker";
+import { DATE_ERROR_INPUT, DESCRIPTION_ERROR_INPUT, DUPLICATE_PRODUCT_ERROR_INPUT, generateLengthError, NAME_ERROR_INPUT, NO_ERROR_INPUT, PRODUCT_NAME_ERROR_INPUT, PRODUCT_PRICE_ERROR_INPUT } from "../../Constants/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faSave } from "@fortawesome/free-solid-svg-icons";
+import { StyledOrderContainer, StyledPagesWrapper, StyledProductRow } from "../../Styles/StyledPages";
+import { StyledButton, StyledH2Title } from "../../Styles/StyledComponents";
 import { ErrorType } from "../../Types/Hooks/Hooks";
+import { Product } from "../../Types/Components/NewOrder";
 import { FormErrors } from "../../Types/Pages/NewOrder";
-import ApiClient from "../../Services/ApiClient";
-import { SAVE_ORDER } from "../../Constants/Endpoints";
-import Swal from "sweetalert2";
-
-const NewOrder = () => {
+import { invalidateCache } from "../../Services/Cache";
+const EditOrder = () => {
+    const { uuid } = useParams();
     const { setIsLoading } = useAppContext();
-    const { handleError } = useError();
+    const { handleError, handleApiError } = useError();
 
     const [orderName, setOrderName] = useState<string>("");
     const [orderDescription, setOrderDescription] = useState<string>("");
@@ -31,16 +33,7 @@ const NewOrder = () => {
         orderDate: NO_ERROR_INPUT,
         products: [{ name: NO_ERROR_INPUT, price: NO_ERROR_INPUT }]
     };
-
     const [errors, setErrors] = useState<FormErrors>(defaultErrors);
-
-    const handleFormReset = () => {
-        setOrderName("");
-        setOrderDescription("");
-        setOrderDate("");
-        setProducts([{ name: "", price: "" }]);
-        setErrors(defaultErrors);
-    };
 
     const handleErrorsReset = useCallback(() => {
         setErrors({
@@ -55,7 +48,7 @@ const NewOrder = () => {
         setProducts(updatedProducts);
     }, [products]);
 
-    const canAddProduct = products.every(product => product.name.trim() && product.price.trim());
+    const canAddProduct = products.every(product => product.name.trim() && String(product.price).trim());
 
     const addProduct = useCallback(() => {
         if (!canAddProduct) return;
@@ -68,7 +61,39 @@ const NewOrder = () => {
         }
     }, [products]);
 
-    const handleAddOrder = useCallback(async () => {
+    const handleGetOrderDetails = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const { data } = await ApiClient.get(`${GET_ORDER_DETAILS}/${uuid}`);
+            const { status, message, data: order } = data;
+
+            if (!status) {
+                handleApiError(message);
+                return;
+            }
+
+            const parseDateDMY = (dateString: string): string => {
+                const [day, month, year] = dateString.split('/').map(Number);
+                const date = new Date(year, month - 1, day);
+
+                // Formatta manualmente la data in YYYY-MM-DD
+                const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+                return formattedDate;
+            }
+
+            setOrderName(order.name);
+            setOrderDescription(order.description);
+            setOrderDate(parseDateDMY(order.date));
+            setProducts(order.products || []);
+        } catch (error) {
+            handleError(error as ErrorType);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [uuid]);
+
+    const handleUpdateOrder = useCallback(async () => {
         try {
             setIsLoading(true);
 
@@ -107,7 +132,6 @@ const NewOrder = () => {
                 newErrors.orderDate = DATE_ERROR_INPUT;
                 hasErrors = true;
             }
-            console.log(orderDate?.length);
             if (orderDate && orderDate.length > 10) {
                 newErrors.orderDate = generateLengthError(10, "Order date");
                 hasErrors = true;
@@ -119,7 +143,7 @@ const NewOrder = () => {
                     newErrors.products[index] = { ...newErrors.products[index], name: PRODUCT_NAME_ERROR_INPUT };
                     hasErrors = true;
                 }
-                if (!product.price.trim()) {
+                if (!String(product.price).trim()) {
                     newErrors.products[index] = { ...newErrors.products[index], price: PRODUCT_PRICE_ERROR_INPUT };
                     hasErrors = true;
                 }
@@ -163,16 +187,14 @@ const NewOrder = () => {
             if (hasErrors) {
                 return;
             };
-
-            // Prepare the data to be sent to the server
-            const saveObj = {
+            const updatedOrder = {
                 name: orderName.trim(),
                 description: orderDescription.trim(),
-                date: orderDate!.trim(),
-                products: products.map(({ name, price }) => ({ name: name.trim(), price: price.trim() })),
+                date: orderDate?.trim(),
+                products: products.map(({ name, price }) => ({ name: name.trim(), price: String(price).trim() })),
             };
 
-            const { data } = await ApiClient.post(SAVE_ORDER, saveObj);
+            const { data } = await ApiClient.post(`${UPDATE_ORDER}/${uuid}`, updatedOrder);
             const { status, message } = data;
 
             if (!status) {
@@ -180,28 +202,32 @@ const NewOrder = () => {
                 return;
             }
 
-            handleFormReset();
+            const cacheKey = JSON.stringify({ url: `${GET_ORDER_DETAILS}/${uuid}`, method: "get" });
+            await invalidateCache(cacheKey);
 
-            Swal.fire("Success", "Order saved successfully!", "success");
+            Swal.fire("Success", "Order updated successfully!", "success");
         } catch (error) {
             handleError(error as ErrorType);
-            setIsLoading(false);
         } finally {
             setIsLoading(false);
         }
-    }, [orderName, orderDescription, orderDate, products]);
+    }, [orderName, orderDescription, orderDate, products, uuid]);
+
+    useEffect(() => {
+        handleGetOrderDetails();
+    }, [handleGetOrderDetails]);
+
     return (
         <StyledPagesWrapper>
-            <StyledH2Title>Insert a new order</StyledH2Title>
-            <HelperIcon helperContent="Fill in all the fields to create a new order." />
+            <StyledH2Title>Edit Order</StyledH2Title>
+            <HelperIcon helperContent="Update the fields below to modify the order details." />
             <GoToHome />
             <StyledOrderContainer>
-                <StyledH2Title className="margined-title">Order details</StyledH2Title>
+                <StyledH2Title>Order details</StyledH2Title>
                 <Input customClass="full-w" name="order-name" type="text" label="Order name" placeholder="Enter the order name" value={orderName} onChange={(e) => setOrderName(e.target.value)} triggerError={errors.orderName} />
                 <Input customClass="full-w" isTextArea name="order-description" type="text" label="Order description" placeholder="Enter the order description" value={orderDescription} onChange={(e) => setOrderDescription(e.target.value)} triggerError={errors.orderDescription} />
-                {/* <Input customClass="full-w" name="order-date" type="date" label="Insert the order date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} triggerError={orderDateError} /> */}
                 <CustomDatePicker label="Order date" placeholder="Enter the order date" dateState={[orderDate, setOrderDate]} triggerError={errors.orderDate} />
-                <StyledH2Title className="margined-title">Associated products</StyledH2Title>
+                <StyledH2Title>Associated products</StyledH2Title>
                 {products.map((product, index) => (
                     <StyledProductRow key={index}>
                         <Input
@@ -215,7 +241,7 @@ const NewOrder = () => {
                             triggerError={errors.products[index]?.name}
                         />
                         <Input
-                            customClass="product-price-input margin-auto"
+                            customClass="product-price-input"
                             name={`product-price-${index}`}
                             type="number"
                             label={`Price ${product.price} (€)`}
@@ -227,7 +253,7 @@ const NewOrder = () => {
                         />
                         <div className="button-container">
                             <StyledButton className="remove-product-button" onClick={() => removeProduct(index)} disabled={products.length === 1} >
-                                <FontAwesomeIcon icon={faMinus} color="#a10000"/>
+                                <FontAwesomeIcon icon={faMinus} color="#a10000" />
                             </StyledButton>
                             {index === products.length - 1 && (
                                 <StyledButton className="add-product-button" onClick={addProduct} disabled={!canAddProduct} >
@@ -237,11 +263,10 @@ const NewOrder = () => {
                         </div>
                     </StyledProductRow>
                 ))}
-
-                <StyledButton className="flex-button order-submit-button" onClick={handleAddOrder}><FontAwesomeIcon icon={faSave} size="lg" />Save order</StyledButton>
+                <StyledButton className="flex-button order-submit-button" onClick={handleUpdateOrder}><FontAwesomeIcon icon={faSave} size="lg" /> Update Order</StyledButton>
             </StyledOrderContainer>
         </StyledPagesWrapper>
     );
 };
 
-export default NewOrder;
+export default EditOrder;

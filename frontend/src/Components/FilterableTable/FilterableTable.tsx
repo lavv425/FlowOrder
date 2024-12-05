@@ -70,14 +70,14 @@ const FilterableTable: FC<FilterableTableProps> = ({ headers, body, customClass,
                     filterMode
                         ? (Array.isArray(headers)
                             ? headers.map((header, index) =>
-                                header === "Azione" ? (
+                                header === "Actions" ? (
                                     <span key={index}>{header}</span>
                                 ) : (
                                     <Select
                                         key={index}
                                         options={columnOptions[header as string]}
                                         isMulti
-                                        placeholder={`Filtra ${header}`}
+                                        placeholder={`Filter ${header}`}
                                         value={selectedFilters[header as string] || []}
                                         onChange={(selected) => handleFilterChange(String(header), (selected as FilterOption[]))}
                                         className="table-filters-select"

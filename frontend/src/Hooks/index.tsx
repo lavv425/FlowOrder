@@ -3,6 +3,8 @@ import { AppContext } from "../Contexts/AppContext";
 import T from "../Singletons/Typer";
 import Swal from "sweetalert2";
 import { ErrorType } from "../Types/Hooks/Hooks";
+import { useNavigate } from "react-router-dom";
+import { INDEX } from "../Routes/Routes";
 
 export const useAppContext = () => {
     const context = useContext(AppContext);
@@ -21,6 +23,7 @@ export const useToday = (): string => {
 }
 
 const useError = () => {
+    const nav = useNavigate();
     const handleError = useCallback((error: ErrorType) => {
         // Validate the error object using Typer
         const typedError = T.isType("o", error);
@@ -41,7 +44,15 @@ const useError = () => {
         }
     }, []);
 
-    return { handleError };
+    const handleApiError = useCallback((message: string, backTo: string = INDEX) => {
+        Swal.fire({
+            title: "Error",
+            text: message,
+            icon: "error",
+        }).then((_) => nav(backTo));
+    }, [nav]);
+
+    return { handleError, handleApiError };
 };
 
 export default useError;

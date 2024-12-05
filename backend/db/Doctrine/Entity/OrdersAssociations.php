@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: "orders_association")]
-class Associations
+class OrdersAssociations
 {
     #[ORM\Id]
     #[ORM\Column(type: "string", length: 36, unique: true)]

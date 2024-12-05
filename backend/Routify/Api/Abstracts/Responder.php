@@ -9,7 +9,7 @@
  * 
  * @author Michael Lavigna <michael.lavigna@hotmail.it>
  * @version 1.1.5
- * @namespace Routify\Api\Abstracts
+ * @package Routify\Api\Abstracts
  */
 
 namespace Routify\Api\Abstracts;

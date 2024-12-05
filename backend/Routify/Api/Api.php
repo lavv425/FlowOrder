@@ -40,7 +40,7 @@
  *
  * @author Michael Lavigna <michael.lavigna@hotmail.it>
  * @version 1.1.5
- * @namespace Routify
+ * @package Routify
  */
 
 namespace Routify;
@@ -51,6 +51,7 @@ use Exception;
 use RuntimeException;
 
 use Routify\RateLimiter;
+use Routify\RequestBodyHandler;
 use Routify\Api\Abstracts\Responder;
 
 use React\EventLoop\Loop;
@@ -377,7 +378,7 @@ class Api extends Responder
             if ((is_array($allowedHeaders) && !empty($allowedHeaders)) || (is_string($allowedHeaders) && strlen($allowedHeaders) > 0)) {
                 header("Access-Control-Allow-Headers: {$allowedHeaders}");
             } else {
-                header("Access-Control-Allow-Headers: Content-Type, Authorization");
+                header("Access-Control-Allow-Headers: Content-Type, Authorization, Accept");
             }
         }
 
@@ -438,7 +439,7 @@ class Api extends Responder
         // Iterate through routes to find a match with dynamic parameters
         foreach (self::$routes[$method] as $route => $callback) {
             // Replace {parameter} with a regex to capture values
-            $pattern = preg_replace("/\{[a-zA-Z0-9_]+\}/", "([a-zA-Z0-9_=\-]+)", $route);
+            $pattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_=\-]+)', $route);
             // Alternative pattern (previous version)
             // $pattern = preg_replace("/\{[a-zA-Z0-9_]+\}/", "([a-zA-Z0-9_]+)", $route);
             $pattern = str_replace("/", "\/", $pattern);
@@ -470,7 +471,6 @@ class Api extends Responder
                 }
             }
         }
-
         // Check if the route exists but with a different HTTP method
         if (self::routeExistsForDifferentMethod($path)) {
             self::handleError(405, "Method Not Allowed.");
@@ -558,7 +558,7 @@ class Api extends Responder
                                 "Content-Type" => "application/json",
                                 "Access-Control-Allow-Origin" => self::$allowedDefaultOrigin,
                                 "Access-Control-Allow-Methods" => "GET, POST, PUT, DELETE, OPTIONS",
-                                "Access-Control-Allow-Headers" => "Content-Type, Authorization",
+                                "Access-Control-Allow-Headers" => "Content-Type, Authorization, Accept",
                                 "Access-Control-Allow-Credentials" => "true",
                             ],
                             json_encode([
@@ -567,12 +567,13 @@ class Api extends Responder
                             ])
                         );
                     }
+
                     // Populate PHP's global variables
                     self::configureGlobals($request);
 
-                    // Handle raw input
-                    $inputData = (string) $request->getBody();
-                    file_put_contents("php://input", $inputData);
+                    // // Handle raw input
+                    // $inputData = (string) $request->getBody();
+                    // file_put_contents("php://input", $inputData);
 
                     ob_start();
                     self::dispatch();
@@ -582,7 +583,7 @@ class Api extends Responder
                         "Content-Type" => "application/json",
                         "Access-Control-Allow-Origin" => self::$allowedDefaultOrigin,
                         "Access-Control-Allow-Methods" => "GET, POST, PUT, DELETE, OPTIONS",
-                        "Access-Control-Allow-Headers" => "Content-Type, Authorization",
+                        "Access-Control-Allow-Headers" => "Content-Type, Authorization, Accept",
                         "Access-Control-Allow-Credentials" => "true",
                     ], $output);
 
@@ -602,7 +603,7 @@ class Api extends Responder
                     self::log("error", "Unhandled request error: " . $e->getMessage());
                     return new Response(500, ["Content-Type" => "application/json"], json_encode([
                         "status" => "error",
-                        "message" => "Internal Server Error",
+                        "message" => $e->getMessage(),
                     ]));
                 }
             });
@@ -646,14 +647,19 @@ class Api extends Responder
      */
     private static function configureGlobals(ServerRequestInterface $request): void
     {
+        // self::log("debug", "Request body: " . (string) $request->getBody());
+        RequestBodyHandler::getInstance()->setBody((string) $request->getBody());
+        // Set global server variables
         $_SERVER["REQUEST_METHOD"] = $request->getMethod();
         $_SERVER["REQUEST_URI"] = $request->getUri()->getPath();
         $_SERVER["HTTP_ORIGIN"] = $request->getHeaderLine("Origin");
         $_GET = $request->getQueryParams();
-        $body = $request->getParsedBody();
-        $_POST = is_array($body) ? $body : [];
 
-        file_put_contents("php://input", (string)$request->getBody());
+        // // Parse and set $_POST if applicable
+        // $parsedBody = $request->getParsedBody();
+        // $_POST = is_array($parsedBody) ? $parsedBody : [];
+
+        // file_put_contents("php://input", (string)$request->getBody());
     }
 
     /**
@@ -679,6 +685,18 @@ class Api extends Responder
             "local_cert" => $certFile,
             "local_pk" => $keyFile,
         ];
+    }
+
+    /**
+     * Retrieve the POST request body.
+     *
+     * @return array|null The POST request body or null if unavailable.
+     */
+    public static function getBody(): ?array
+    {
+        $body = RequestBodyHandler::getInstance()->getBody();
+
+        return $body;
     }
 
     /**

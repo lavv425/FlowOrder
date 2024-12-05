@@ -3,9 +3,6 @@ import { TriggerErrorProps } from "../Types/Components/Input";
 import { AxiosSettings, LoaderSettings, XLSXDownloadOptions } from "../Types/Constants/Constants";
 import { BASE_URL } from "./Endpoints";
 
-// Token for http requests
-export const AUTH_TOKEN: string = "P(MWgK3D#Evu&4zbLnYt^d*XVk";
-
 // Axios settings for axios.create()
 export const AXIOS_SETTINGS: AxiosSettings = {
     baseURL: T.isURL(BASE_URL)!,
@@ -32,24 +29,44 @@ export const NO_ERROR_INPUT: TriggerErrorProps = {
     message: "",
 };
 
+export const generateLengthError = (length: number, fieldName: string): TriggerErrorProps => ({
+    isTriggered: true,
+    message: `${fieldName} should not exceed ${length} characters`
+});
+
 export const NAME_ERROR_INPUT: TriggerErrorProps = {
     isTriggered: true,
-    message: "You must insert a valid name for the order.",
+    message: "You must provide a valid name for the order."
 };
 
 export const DESCRIPTION_ERROR_INPUT: TriggerErrorProps = {
     isTriggered: true,
-    message: "You must insert a valid description for the order.",
+    message: "You must provide a valid description for the order."
 };
 
 export const DATE_ERROR_INPUT: TriggerErrorProps = {
     isTriggered: true,
-    message: "You must insert a valid date for the order.",
+    message: "You must provide a valid date for the order."
 };
 
-export const NOT_FOUND_ERROR_INPUT = {
+export const PRODUCT_NAME_ERROR_INPUT: TriggerErrorProps = {
     isTriggered: true,
-    message: "Nessun risultato!"
+    message: "Product name is required!"
+};
+
+export const PRODUCT_PRICE_ERROR_INPUT: TriggerErrorProps = {
+    isTriggered: true,
+    message: "Product name is required!"
+};
+
+export const DUPLICATE_PRODUCT_ERROR_INPUT: TriggerErrorProps = {
+    isTriggered: true,
+    message: "Product names cannot be duplicated!"
+};
+
+export const NOT_FOUND_ERROR_INPUT: TriggerErrorProps = {
+    isTriggered: true,
+    message: "No results found!"
 }
 
 export const XLSX_DOWNLOAD_OPTIONS: XLSXDownloadOptions = { bookType: "xlsx", type: "file", compression: true };

@@ -29,8 +29,9 @@ backdrop-filter: blur(1px);`;
 export const InputWrapper = styled.div`
 width:100%;
 position:relative;
+margin-top: 30px;
 
-    & .full-width {
+    & .full-w {
         width: -webkit-fill-available;
     }`;
 
@@ -55,8 +56,7 @@ overflow: hidden;
         white-space: nowrap;
         margin-top: 5px;
         margin-bottom: 20px;
-    }
-`;
+    }`;
 
 export const StyledInput = styled.input`
 padding: 10px 12px;
@@ -162,6 +162,12 @@ position: relative;
     }
     & input{
         width:350px;
+
+        @media screen and (max-width: 768px) {
+            width: 200px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
     }
     
     & svg{
@@ -199,22 +205,6 @@ export const StyledTableRow = styled.tr`
 transition: 0.2s all;
     &:hover:not(thead tr) {
         background: #ededed;
-    }
-
-    & > td:last-child{
-        min-width:10%;
-
-        & svg{
-        margin:5%;
-        cursor:pointer;
-        opacity:0.7;
-        transition: 0.2s all;
-
-            &:hover{
-            opacity:1;
-            scale:1.3;
-            }
-        }
     }`;
 
 export const StyledTableHeader = styled.th`
@@ -226,7 +216,16 @@ border-bottom: 1px solid #ddd;`;
 export const StyledTableData = styled.td`
 padding: 12px;
 text-align: left;
-border-bottom: 1px solid #ddd;`;
+border-bottom: 1px solid #ddd;
+max-width: 200px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+
+@media screen and (max-width: 768px) {
+    padding:10px;
+    max-width: 150px;
+}`;
 
 export const StyledModalDialogWrapper = styled.div`
 position: fixed;

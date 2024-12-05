@@ -2,7 +2,9 @@
 
 namespace Entity;
 
+
 use Doctrine\ORM\Mapping as ORM;
+use Entity\Products;
 
 #[ORM\Entity]
 #[ORM\Table(name: "orders")]
@@ -21,6 +23,14 @@ class Orders
 
     #[ORM\Column(type: "date")]
     private \DateTime $date;
+
+    #[ORM\OneToMany(mappedBy: "order", targetEntity: Products::class, cascade: ["persist", "remove"])]
+    private $products;
+
+    public function __construct()
+    {
+        $this->products = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     // Getters and Setters
 
@@ -61,7 +71,29 @@ class Orders
         if (!$dateTime) {
             throw new \InvalidArgumentException("Invalid date format. Expected Y-m-d.");
         }
-    
+
         $this->date = $dateTime;
+    }
+
+    public function getProducts(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Products $product): void
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->setOrder($this);
+        }
+    }
+
+    public function removeProduct(Products $product): void
+    {
+        if ($this->products->contains($product)) {
+            $this->products->removeElement($product);
+            // Rimuove il riferimento all'ordine dal prodotto
+            $product->clearOrder();
+        }
     }
 }

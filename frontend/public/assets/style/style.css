@@ -14,7 +14,8 @@ body {
   margin: 0;
   /* background: #fffbf3; */
   color: #213547;
-  background: #dcdcdc;
+  /* background: #dcdcdc; */
+  background: #f3f3f3;
 }
 
 .go-to-home {
@@ -33,9 +34,9 @@ body {
 }
 
 .error {
-  position: absolute;
-  top: 100%;
-  left: 0;
+  /* position: absolute;
+  top: 92%;
+  left: 1rem; */
   color: #a10000;
   font-size: 15px;
 }
@@ -70,14 +71,21 @@ body {
   font-weight: bolder !important;
 }
 
-.full-w-input {
+.order-submit-button {
+  width: -webkit-fill-available;
+  max-width: calc(50%);
+  margin: auto;
+  margin-top: 65px !important;
+}
+
+.full-w {
   width: -webkit-fill-available;
 }
 
 .react-datepicker-input {
   padding: 10px 12px;
-  /* margin-top: 5px;
-  margin-bottom: 20px; */
+  margin-top: 5px;
+  margin-bottom: 20px;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -94,13 +102,59 @@ body {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.margined-title{
+.margined-title {
   margin: 30px 0 !important;
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -webkit-appearance: textfield; /* Remove default WebKit appearance */
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield;
+}
+
+
+.orders-table tbody td:first-child svg {
+  margin: 3%;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s all;
+}
+
+.orders-table tbody td:first-child svg:hover {
+  opacity: 1;
+  transform: scale(1.3);
+}
 @media screen and (max-width: 768px) {
   .go-to-home {
     width: 75px;
     font-size: 12px;
+  }
+
+  .orders-table thead th:first-child {
+    z-index: 3;
+  }
+
+  .orders-table thead td:first-child {
+    background: rgba(185, 185, 185, 0.12);
+    min-width: 10%;
+  }
+
+
+  .orders-table thead th:first-child,
+  .orders-table tbody td:first-child {
+    position: -webkit-sticky;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 1px 0 0 #000000;
+    text-overflow: unset;
   }
 }

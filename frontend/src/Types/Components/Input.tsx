@@ -15,6 +15,7 @@ export type InputProps = {
     onClick?: (event: React.MouseEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
     onChange?: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    maxChars?: number
     triggerError?: TriggerErrorProps;
     customContainerClass?: string; 
     disabled?: boolean;

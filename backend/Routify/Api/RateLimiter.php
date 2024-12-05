@@ -3,9 +3,6 @@
 /**
  * Class RateLimiter
  *
- * @author Michael Lavigna <michael.lavigna@hotmail.it>
- * @version 1.1.5
- *
  * This class provides a simple rate-limiting mechanism to restrict the number of requests 
  * that a client (identified by IP address) can make within a specified time frame. 
  *
@@ -26,6 +23,10 @@
  *
  * ## Notes
  * - This implementation is suitable for small to medium traffic. For high-traffic systems, consider using a distributed rate-limiting solution.
+ * 
+ * @author Michael Lavigna <michael.lavigna@hotmail.it>
+ * @version 1.1.5
+ * @package Routify
  */
 
 namespace Routify;

@@ -1,4 +1,4 @@
-import { BookType } from "sheetjs-style";
+import { BookType } from "xlsx";
 
 export type AxiosSettings = {
     baseURL: string;

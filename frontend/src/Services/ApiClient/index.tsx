@@ -1,6 +1,6 @@
 import axios from "axios";
 import T from "../../Singletons/Typer";
-import { AUTH_TOKEN, AXIOS_SETTINGS, CACHE_EXCLUDED_ENDPOINTS } from "../../Constants/Constants";
+import { AXIOS_SETTINGS, CACHE_EXCLUDED_ENDPOINTS } from "../../Constants/Constants";
 import { getFromCache, saveToCache } from "../Cache";
 
 const ApiClient = axios.create(T.isType("o", AXIOS_SETTINGS));
@@ -9,7 +9,6 @@ ApiClient.interceptors.request.use(
     async (config) => {
         try {
             config.url = T.isType("s", config.url);
-            config.headers.Authorization = `Bearer ${T.isType("s", AUTH_TOKEN)}`;
 
             if (!(T.isArrayOf("s", CACHE_EXCLUDED_ENDPOINTS) as string[]).includes(config.url!)) {
                 const cacheKey = JSON.stringify({

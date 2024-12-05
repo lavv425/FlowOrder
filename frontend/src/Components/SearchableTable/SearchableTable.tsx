@@ -94,15 +94,15 @@ const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass,
                 return;
             }
 
-            // Filter headers to exclude those containing "Action"
+            // Filter headers to exclude those containing "Actions"
             const formattedHeaders = (headers as string[]).map((header, index) => ({
                 key: `col_${index}`,
                 header,
-            })).filter(header => !header.header.includes("Action"));
+            })).filter(header => !header.header.includes("Actions"));
 
             // Find indices of headers to exclude
             const excludedIndices = (headers as string[])
-                .map((header, index) => (header.includes("Action") ? index : -1))
+                .map((header, index) => (header.includes("Actions") ? index : -1))
                 .filter(index => index !== -1);
 
             // Filter body to remove columns corresponding to excluded indices
