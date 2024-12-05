@@ -107,7 +107,7 @@ const NewOrder = () => {
                 newErrors.orderDate = DATE_ERROR_INPUT;
                 hasErrors = true;
             }
-            console.log(orderDate?.length);
+            // console.log(orderDate?.length);
             if (orderDate && orderDate.length > 10) {
                 newErrors.orderDate = generateLengthError(10, "Order date");
                 hasErrors = true;

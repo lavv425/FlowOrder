@@ -98,7 +98,7 @@ const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass,
             const formattedHeaders = (headers as string[]).map((header, index) => ({
                 key: `col_${index}`,
                 header,
-            })).filter(header => !header.header.includes("Actions"));
+            })).filter(header => !header.header.trim().includes("Actions"));
 
             // Find indices of headers to exclude
             const excludedIndices = (headers as string[])
@@ -116,10 +116,11 @@ const SearchableTable: FC<SearchableTableProps> = ({ headers, body, customClass,
                 }, {})
             );
 
+            const headerRow = formattedHeaders.map(header => header.header);
             // Create the worksheet with filtered headers and body
             const worksheet = XLSX.utils.json_to_sheet(formattedBody);
 
-            XLSX.utils.sheet_add_aoa(worksheet, [(headers as unknown as string[])], { origin: "A1" });
+            XLSX.utils.sheet_add_aoa(worksheet, [headerRow], { origin: "A1" });
 
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, exportFilename);
